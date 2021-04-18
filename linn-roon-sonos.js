@@ -30,12 +30,12 @@ for (let i = 0; i < units.length; i++) {
 }
 
 var roon = new RoonApi({
-    extension_id:        'com.linn-roon-sonos.test',
+    extension_id:        'linn-roon-sonos.test',
     display_name:        "linn-roon-sonos",
     display_version:     "0.1.0",
     publisher:           'gsfriedman',
     email:               'none@none.com',
-    website:             'https://github.com/gsfriedman/roon-extension-test',
+    website:             'https://github.com/gsfriedman/linn-roon-sonos',
 
     core_paired: function(core) {
         roonTransport = core.services.RoonApiTransport;
