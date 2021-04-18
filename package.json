@@ -1,0 +1,13 @@
+{
+    "name": "linn-roon-sonos",
+    "version": "0.1.0",
+    "description": "Disable roon when Sonos starts",
+    "main": "linn-room-sonos.js",
+    "author": "Greg Friedman",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "node-roon-api": "github:roonlabs/node-roon-api",
+        "node-roon-api-transport": "github:roonlabs/node-roon-api-transport",
+        "sonos": "^1.14.1"
+    }
+}
