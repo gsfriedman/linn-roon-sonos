@@ -1,6 +1,7 @@
-var RoonApi             = require("node-roon-api"),
-    RoonApiTransport    = require("node-roon-api-transport"),
-    Sonos               = require("sonos").Sonos;    
+const   RoonApi             = require("node-roon-api"),
+        RoonApiTransport    = require("node-roon-api-transport"),
+        Sonos               = require("sonos").Sonos,
+        UPnPRemote          = require("node-upnp-remote");
 
 var roonZones = null;
 var roonTransport = null;
@@ -12,15 +13,18 @@ var roonTransport = null;
 // is the actual Roon audio target because, in that case, playing Roon to
 // that device cause it to appear that the Sonos device is playing which will
 // immediately pause Roon (which is not what you want in this case)
-var roonTargetZones =   [ 'Main Room' ];
-var sonosIpAddresses =  [ '192.168.10.254' ];
+var roonTargetZones     = [ 'Main Room' ];
+var sonosIpAddresses    = [ '192.168.10.254' ];
+var linnIpAddresses     = [ '192.168.10.167' ];
 
 class Unit {
-    constructor(roonZoneName, sonosIpAddress) {
+    constructor(roonZoneName, sonosIpAddress, linnIpAddress) {
         this.roonZoneName = roonZoneName;
         this.roonZone = null;
         this.sonosIpAddress = sonosIpAddress;
         this.sonos = null;
+        this.linnIpAddress = linnIpAddress;
+        this.linnUPnPRemote = null;
     }
 }
 
@@ -28,12 +32,16 @@ const units = [];
 
 // create the Units collection with seed values
 for (let i = 0; i < roonTargetZones.length; i++) {
-    units.push(new Unit(roonTargetZones[i], sonosIpAddresses[i]));
+    units.push(new Unit(roonTargetZones[i], sonosIpAddresses[i], linnIpAddresses[i]));
 }
 
-// populate Sonos values in the Units collection
+// populate Sonos devices and Linn UpNP controllers  in the Units collection
 for (let i = 0; i < units.length; i++) {
     units[i].sonos = new Sonos(units[i].sonosIpAddress, 1400);
+
+    units[i].linnUPnPRemote = new UPnPRemote({
+        url: 'http://' + units[i].linnIpAddresses + ':44042/some.xml'
+    })
 }
 
 var roon = new RoonApi({
@@ -54,7 +62,10 @@ var roon = new RoonApi({
                                                   cmd,
                                                   JSON.stringify(data, null, '  '));
 
-                                        UpdateRoonUnits(data.zones);
+                                        if (data != null && data != undefined) {
+                                            UpdateRoonUnits(data.zones);
+                                            
+                                        }
                                   });
     },
 
