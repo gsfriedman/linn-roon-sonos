@@ -5,7 +5,14 @@ var RoonApi             = require("node-roon-api"),
 var roonZones = null;
 var roonTransport = null;
 
-var roonTargetZones =   [ 'Living Room' ];
+// roonTargetZones and sonosIpAddresses are parallel arrays that define a unit
+// when we detect that a sonos zone is playing, the corresponding roon zone
+// will be paused. This only helps in the case where the Sonos device is a
+// Port or Amp playing to a streamer. It does not help when the Sonos device
+// is the actual Roon audio target because, in that case, playing Roon to
+// that device cause it to appear that the Sonos device is playing which will
+// immediately pause Roon (which is not what you want in this case)
+var roonTargetZones =   [ 'Main Room' ];
 var sonosIpAddresses =  [ '192.168.10.254' ];
 
 class Unit {
@@ -77,14 +84,9 @@ function UpdateRoonUnits(zones) {
     }
 }
 
-//pollLoop();
-
 function pollLoop() {
 
     for (let i = 0; i < units.length; i++) {
-        //let sonosPlayState = units[i].sonos.getCurrentState();
-        //console.log(sonosPlayState);
-
         units[i].sonos.getCurrentState()
             .then(currentState => { handleSonosState(i, currentState) });
     }
