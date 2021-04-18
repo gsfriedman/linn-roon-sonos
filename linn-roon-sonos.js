@@ -35,7 +35,7 @@ var roon = new RoonApi({
     display_version:     "0.1.0",
     publisher:           'none',
     email:               'none@none.com',
-    website:             'https://github.com/elvispresley/roon-extension-test',
+    website:             'https://github.com/gsfriedman/roon-extension-test',
 
     core_paired: function(core) {
         roonTransport = core.services.RoonApiTransport;
